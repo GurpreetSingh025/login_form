@@ -15,22 +15,34 @@ exports.getAllUsers = async (req , res) => {
      }
 }
 exports.isDataEmpty = async (req , res , next) => {
-    const data = await userRegisterModel.find() ;
-    if(data.length == 0){
-        return res.status(200).json({
-            status : 'fail' ,
-            message : 'No user found'
-        })
+    try{
+        const data = await userRegisterModel.find() ;
+        if(data.length == 0){
+            return res.status(200).json({
+                status : 'fail' ,
+                message : 'No user found'
+            })
+        }
+    }catch(err){
+        console.log('err ====> ' , err)
     }
 } 
 exports.checkUser = (req , res , next) => {
-     if(!req || !req.body){
-          return res.status(400).json({
-               status : 'fail' ,
-               message : 'Invalid user information' 
-          })
-     }
-     next() ;
+    try{
+        if(!req || !req.body || !req.body.userName.trim() || !req.body.mail.trim()){
+             return res.status(400).json({
+                  status : 'fail' ,
+                  message : 'Invalid user information' 
+             })
+        }
+        next() ;
+    }catch(err){
+        console.log('err ====> ' , err)
+        return res.status(400).json({
+            status : 'fail' ,
+            message : 'Invalid user information' 
+        })
+    }
 }
 exports.registerUser = async (req , res) => {
     try{
